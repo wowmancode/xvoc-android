@@ -39,6 +39,34 @@ There's no `google()`/`mavenCentral()` fetch possible from this chat
 environment, so the project couldn't be compiled to a signed APK here —
 this is a complete, ready-to-build Gradle project instead.
 
+## Building on GitHub (CI)
+
+Two workflows live in `.github/workflows/`:
+
+- **`android-build.yml`** — runs on every push/PR to `main` (and manually
+  via "Run workflow"). Installs JDK 17 + the NDK/CMake, generates the
+  Gradle wrapper, runs `assembleDebug`, and uploads the resulting
+  **unsigned debug APK** as a workflow artifact (Actions tab → the run →
+  Artifacts).
+- **`android-release.yml`** — runs when you push a tag like `v1.0` (or
+  manually). Builds `assembleRelease` and attaches the APK to a GitHub
+  Release. It's unsigned by default; to get a signed release APK, add
+  these four repo secrets (Settings → Secrets and variables → Actions):
+  - `KEYSTORE_BASE64` — your `.jks`/`.keystore` file, base64-encoded
+    (`base64 -w0 your.keystore`)
+  - `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`
+
+  With those set, the workflow decodes the keystore and signs the build;
+  without them it silently falls back to an unsigned APK.
+
+The Gradle wrapper (`gradlew`, `gradlew.bat`, `gradle-wrapper.jar`) is
+**not committed** — it's generated fresh at the start of each workflow run
+(`gradle wrapper --gradle-version 8.7`), since this repo was authored
+without network access to fetch the real wrapper jar. Android Studio
+generates it automatically the first time you open the project locally;
+from the command line, run `gradle wrapper` once yourself if you don't
+use Android Studio.
+
 ## About "live playback"
 
 xvoc's engine is a batch/offline algorithm — it reads a whole WAV, analyzes
