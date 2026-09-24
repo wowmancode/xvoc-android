@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # xvoc — Android app
 
 An Android port of `xvoc.c`, your command-line channel vocoder. The original
@@ -68,4 +69,5 @@ single-voice carrier the same way the CLI does with no `-f`/chord flags.
 - `cache/xvoc_out.wav` — the last render; this is what Export saves and
   what Render & Play plays back. Both live in the app's cache, so they're
   cleared automatically by Android if space is needed.
+=======
 # xvoc-android
